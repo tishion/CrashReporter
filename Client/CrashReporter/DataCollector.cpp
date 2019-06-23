@@ -376,8 +376,8 @@ DataCollector::CollectAllModules()
     ModuleInfo modInfo;
     modInfo.ImageBase = (uint64_t)me32.modBaseAddr;
     modInfo.ImageSize = me32.modBaseSize;
-    modInfo.Name = StrCov::U8ToU16(me32.szModule);
-    modInfo.FullPathName = StrCov::U8ToU16(me32.szExePath);
+    modInfo.Name = StrCov::TToU16(me32.szModule);
+    modInfo.FullPathName = StrCov::TToU16(me32.szExePath);
 
     // Save the current module information
     m_moduleList.push_back(modInfo);
