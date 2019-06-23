@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+*.user
+/Client/temp
+/Client/output
+/Client/.vs

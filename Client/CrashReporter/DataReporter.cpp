@@ -1,5 +1,6 @@
 #include <atlstr.h>
 
+#define USE_CPPREST_SDK
 #ifdef USE_CPPREST_SDK
 #include <cpprest/filestream.h>
 #include <cpprest/http_client.h>
