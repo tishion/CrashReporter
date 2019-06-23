@@ -6,6 +6,7 @@
 
 #include <atlfile.h>
 #include <atltime.h>
+#include <atlstr.h>
 
 #include <algorithm>
 #include <cstdio>
@@ -14,6 +15,7 @@
 
 #include "Constants.h"
 #include "DataCollector.h"
+#include "StringCov.h"
 #include "Log.h"
 #include "Md5.h"
 #include "ZipFileWriter.h"
@@ -133,7 +135,7 @@ DataCollector::Initialize(int pid,
       m_xbp = xbp;
       m_xsp = xsp;
       if (!appName.empty())
-        m_applicationName = ::CA2T(appName.c_str());
+        m_applicationName = StrCov::U8ToU16(appName);
       return true;
     } else
       LogError("Failed to open the thread");
@@ -374,8 +376,8 @@ DataCollector::CollectAllModules()
     ModuleInfo modInfo;
     modInfo.ImageBase = (uint64_t)me32.modBaseAddr;
     modInfo.ImageSize = me32.modBaseSize;
-    modInfo.Name = me32.szModule;
-    modInfo.FullPathName = me32.szExePath;
+    modInfo.Name = StrCov::U8ToU16(me32.szModule);
+    modInfo.FullPathName = StrCov::U8ToU16(me32.szExePath);
 
     // Save the current module information
     m_moduleList.push_back(modInfo);
@@ -649,7 +651,7 @@ DataCollector::GenerateMiniDumpFile()
                                        &dumpExceptionInfo,
                                        nullptr,
                                        nullptr)) {
-      m_dumpFilePath = filePath;
+      m_dumpFilePath = StrCov::TToU16(filePath);
       LogInfo("Dump file path: " << m_dumpFilePath);
       return;
     } else
@@ -692,7 +694,7 @@ DataCollector::GenerateSummaryReportFile()
     hr =
       summaryFile.Write(content.data(), static_cast<DWORD>(content.length()));
     if (SUCCEEDED(hr)) {
-      m_summaryFilePath = filePath;
+      m_summaryFilePath = StrCov::TToU16(filePath);
       LogInfo("Summary file path: " << m_summaryFilePath);
       return;
     } else
@@ -765,7 +767,7 @@ DataCollector::CreateZipFile()
     ZipFile::CloseZip(hZip);
 
     // Save the zip file path
-    m_zipFilePath = zipFilePath;
+    m_zipFilePath = StrCov::TToU16(zipFilePath);
     LogInfo("Zip file path: " << m_zipFilePath);
 
     // Remove the dump file
@@ -885,7 +887,7 @@ std::wstring
 DataCollector::GetFrameString(StackFrame& frame)
 {
   // Format the stack frame to string
-  CAtlStringW frameSymbol;
+  CStringW frameSymbol;
   frameSymbol.Format(L"0x%016llX ", frame.Address);
 
   // Format the frame address

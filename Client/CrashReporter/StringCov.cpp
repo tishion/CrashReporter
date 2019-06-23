@@ -17,4 +17,25 @@ U8ToU16(const std::string& s)
 {
   return u16_u8_cvt.from_bytes(s);
 }
+
+std::string
+TToU8(const TCHAR* s)
+{
+#if defined(UNICODE) || defined(_UNICODE)
+  return U16ToU8(s);
+#else
+  return std::string(s);
+#endif
+}
+
+std::wstring
+TToU16(const TCHAR* s)
+{
+#if defined(UNICODE) || defined(_UNICODE)
+  return std::wstring(s);
+#else
+  return U8ToU16(s);
+#endif
+}
+
 }

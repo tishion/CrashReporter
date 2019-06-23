@@ -9,6 +9,7 @@
 #include "CrashData.h"
 #include "IDataCollector.h"
 #include "IDataReporter.h"
+#include "StringCov.h"
 #include "Log.h"
 
 #include "DataCollector.h"
@@ -23,7 +24,7 @@ CollectBasicInformation(LPTSTR lpstrCmdLine,
 #endif
 
   // Parse the command line
-  CrashReporter::ArgumentParser argumentParser(lpstrCmdLine);
+  CrashReporter::ArgumentParser argumentParser(StrCov::TToU16(lpstrCmdLine));
 
   // Get process id
   uint32_t pid = 0;
