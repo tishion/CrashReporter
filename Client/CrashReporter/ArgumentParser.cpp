@@ -1,7 +1,6 @@
 
 #include <windows.h>
 #include <atlconv.h>
-#include <atlstr.h>
 #include <iterator>
 #include <shellapi.h>
 #include <sstream>
@@ -9,6 +8,7 @@
 #include <vector>
 
 #include "ArgumentParser.h"
+#include "StringCov.h"
 #include "Log.h"
 
 namespace CrashReporter {
@@ -19,7 +19,7 @@ ArgumentParser::ArgumentParser(const std::wstring& cmdline)
     return;
 
   // Convert the command line to UTF8 and store it.
-  m_cmdline = ::CW2A(cmdline.c_str(), CP_UTF8);
+  m_cmdline = StrCov::U16ToU8(cmdline);
 
   // Split the command line to argument list
   int argCount = 0;
@@ -36,13 +36,13 @@ ArgumentParser::ArgumentParser(const std::wstring& cmdline)
     if (temp.at(0) == L'-') {
       // Remove the first '-'
       temp.erase(temp.begin());
-      std::string name = ::CW2A(temp.c_str(), CP_UTF8).m_psz;
+      std::string name = StrCov::U16ToU8(temp);
 
       // Read next argument
       i += 1;
       if (i < argCount && argList[i][0] != L'-') {
         // If next argument is not option name, read it as the value.
-        std::string value = ::CW2A(argList[i], CP_UTF8).m_psz;
+        std::string value = StrCov::U16ToU8(argList[i]);
         m_optionMap[name] = value;
       } else {
         // If next argument is option, it means the current command line is
@@ -84,7 +84,7 @@ ArgumentParser::GetInt32Value(const char* name, int32_t& value)
   if (it != m_optionMap.end()) {
     try {
       // Return the value if found
-      value = std::stoi(it->second, 0, 16);
+      value = std::stoi(it->second, 0, 0);
       return true;
     } catch (const std::exception& e) {
       // Failed to convert it to int32_t
@@ -107,7 +107,7 @@ ArgumentParser::GetInt64Value(const char* name, int64_t& value)
   if (it != m_optionMap.end()) {
     try {
       // Return the value if found
-      value = std::stoll(it->second, 0, 16);
+      value = std::stoll(it->second, 0, 0);
       return true;
     } catch (const std::exception& e) {
       // Failed to convert it to int64_t
@@ -129,7 +129,7 @@ ArgumentParser::GetUInt32Value(const char* name, uint32_t& value)
   if (it != m_optionMap.end()) {
     try {
       // Return the value if found
-      value = std::stoul(it->second, 0, 16);
+      value = std::stoul(it->second, 0, 0);
       return true;
     } catch (const std::exception& e) {
       // Failed to convert it to int32_t
@@ -151,7 +151,7 @@ ArgumentParser::GetUInt64Value(const char* name, uint64_t& value)
   if (it != m_optionMap.end()) {
     try {
       // Return the value if found
-      value = std::stoull(it->second, 0, 16);
+      value = std::stoull(it->second, 0, 0);
       return true;
     } catch (const std::exception& e) {
       // Failed to convert it to int64_t

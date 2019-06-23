@@ -1,4 +1,5 @@
-#include <atlstr.h>
+#include <windows.h>
+#include <Shlwapi.h>
 
 #define USE_CPPREST_SDK
 #ifdef USE_CPPREST_SDK
@@ -8,6 +9,7 @@
 
 #include "Constants.h"
 #include "DataReporter.h"
+#include "StringCov.h"
 #include "Log.h"
 
 #ifdef USE_CPPREST_SDK
@@ -84,30 +86,29 @@ DataReporter::ReportCrashLog(CrashLogData& logData, std::wstring& uploadToken)
   // Build the detail data object
   web::json::value jsonDetailData;
   jsonDetailData[U(PROPERTY_SIGNATURE)] =
-    web::json::value(::CA2W(logData.Detail.CrashSignature.c_str()));
+    web::json::value(StrCov::U8ToU16(logData.Detail.CrashSignature));
   jsonDetailData[U(PROPERTY_PRODUCT_NAME)] =
-    web::json::value(::CA2W(logData.Detail.ProductName.c_str()));
+    web::json::value(StrCov::U8ToU16(logData.Detail.ProductName));
   jsonDetailData[U(PROPERTY_PRODUCT_VERSION)] =
-    web::json::value(::CA2W(logData.Detail.ProductVersion.c_str()));
+    web::json::value(StrCov::U8ToU16(logData.Detail.ProductVersion));
   jsonDetailData[U(PROPERTY_APPLICATIONNAME)] =
-    web::json::value(::CA2W(logData.Detail.ApplicationName.c_str()));
+    web::json::value(StrCov::U8ToU16(logData.Detail.ApplicationName));
   jsonDetailData[U(PROPERTY_EXCEPTIONADDRESS)] =
-    web::json::value(::CA2W(logData.Detail.CrashAddress.c_str()));
+    web::json::value(StrCov::U8ToU16(logData.Detail.CrashAddress));
   jsonDetailData[U(PROPERTY_EXCEPTIONMODULE)] =
-    web::json::value(::CA2W(logData.Detail.CrashModule.c_str()));
+    web::json::value(StrCov::U8ToU16(logData.Detail.CrashModule));
   jsonDetailData[U(PROPERTY_OS_VERSION)] =
-    web::json::value(::CA2W(logData.Detail.OSVersion.c_str()));
+    web::json::value(StrCov::U8ToU16(logData.Detail.OSVersion));
   jsonDetailData[U(PROPERTY_CALLSTACK)] =
-    web::json::value(::CA2W(logData.Detail.CallStack.c_str()));
+    web::json::value(StrCov::U8ToU16(logData.Detail.CallStack));
 
   // Build the log data object
   web::json::value jsonLogData;
   jsonLogData[U(PROPERTY_SIGNATURE)] =
-    web::json::value(::CA2W(logData.Detail.CrashSignature.c_str()));
+    web::json::value(StrCov::U8ToU16(logData.Detail.CrashSignature));
   jsonLogData[U(PROPERTY_IPADDRESS)] =
-    web::json::value(::CA2W(logData.IPAddress.c_str()));
-  jsonLogData[U(PROPERTY_MACHINEID)] =
-    web::json::value(logData.MachineId.c_str());
+    web::json::value(StrCov::U8ToU16(logData.IPAddress));
+  jsonLogData[U(PROPERTY_MACHINEID)] = web::json::value(logData.MachineId);
   jsonLogData[U(PROPERTY_DETAIL)] = jsonDetailData;
 
   // Build the payload object

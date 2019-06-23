@@ -1,3 +1,10 @@
+/**
+ * @file  CrashReporter.hpp.
+ *
+ * @brief Declares the crash reporter class
+ */
+#ifndef CRASH_REPORTER_HPP_
+#define CRASH_REPORTER_HPP_
 #pragma once
 
 // Argument names of the crash reporter
@@ -13,11 +20,13 @@
 #define ARG_XBP "xbp"
 #define ARG_XSP "xsp"
 #define EMPTY_VALUE "unknown"
-#define EXIT_EVENT_NAME_PREFIX L"{4aa014c4-a90d-4b78-b97b-4436b90f934e}_"
+#define EXIT_EVENT_NAME_PREFIX "{4aa014c4-a90d-4b78-b97b-4436b90f934e}_"
 
+// CRASH_REPORTER_EXE_BUILD
+// This switch is for internal use only
 #ifndef CRASH_REPORTER_EXE_BUILD
 //#if 1
-#define CRASH_REPORTER_EXE_NAME _T("CrashReporter.exe")
+#define CRASH_REPORTER_EXE_NAME "CrashReporter.exe"
 
 #define LibLogInfo(...) __noop
 #define LibLogError(...) __noop
@@ -131,7 +140,8 @@ public:
 
     // Build the event name used for the notification of process exit
     CString exitEventName;
-    exitEventName.Format(EXIT_EVENT_NAME_PREFIX L"%x", GetCurrentProcessId());
+    exitEventName.Format(_T(EXIT_EVENT_NAME_PREFIX) _T("%x"),
+                         GetCurrentProcessId());
 
     CEvent waitEvent;
     waitEvent.Create(NULL, FALSE, FALSE, exitEventName);
@@ -365,7 +375,7 @@ protected:
     CString reporterExePathName;
     ::PathCombine(reporterExePathName.GetBuffer(MAX_PATH),
                   appFolderPath,
-                  CRASH_REPORTER_EXE_NAME);
+                  _T(CRASH_REPORTER_EXE_NAME));
     reporterExePathName.ReleaseBuffer();
 
     // If it exists, return the path
@@ -498,27 +508,27 @@ protected:
                          (applicationName.IsEmpty()
                             ? _T(EMPTY_VALUE)
                             : applicationName.GetString()));
-    cmdline.AppendFormat(_T(" -" ARG_PROCESS_ID " %x"), pid);
-    cmdline.AppendFormat(_T(" -" ARG_THREAD_ID " %x"), tid);
-    cmdline.AppendFormat(_T(" -" ARG_EXCEPTION_POINTER " %p"),
+    cmdline.AppendFormat(_T(" -" ARG_PROCESS_ID " 0x%x"), pid);
+    cmdline.AppendFormat(_T(" -" ARG_THREAD_ID " 0x%x"), tid);
+    cmdline.AppendFormat(_T(" -" ARG_EXCEPTION_POINTER " 0x%p"),
                          exceptionPointer);
-    cmdline.AppendFormat(_T(" -" ARG_CONTEXT " %p"),
+    cmdline.AppendFormat(_T(" -" ARG_CONTEXT " 0x%p"),
                          exceptionPointer->ContextRecord);
-    cmdline.AppendFormat(_T(" -" ARG_CONTEXT_LEN " %x"), sizeof(CONTEXT));
+    cmdline.AppendFormat(_T(" -" ARG_CONTEXT_LEN " 0x%x"), sizeof(CONTEXT));
 
 #if defined(_M_IX86) || defined(__i386)
-    cmdline.AppendFormat(_T(" -" ARG_XIP " %p"),
+    cmdline.AppendFormat(_T(" -" ARG_XIP " 0x%p"),
                          (void*)(exceptionPointer->ContextRecord->Eip));
-    cmdline.AppendFormat(_T(" -" ARG_XBP " %p"),
+    cmdline.AppendFormat(_T(" -" ARG_XBP " 0x%p"),
                          (void*)(exceptionPointer->ContextRecord->Ebp));
-    cmdline.AppendFormat(_T(" -" ARG_XSP " %p"),
+    cmdline.AppendFormat(_T(" -" ARG_XSP " 0x%p"),
                          (void*)(exceptionPointer->ContextRecord->Esp));
 #elif defined(_M_X64) || defined(__x86_64__)
-    cmdline.AppendFormat(_T(" -" ARG_XIP " %p"),
+    cmdline.AppendFormat(_T(" -" ARG_XIP " 0x%p"),
                          (void*)(exceptionPointer->ContextRecord->Rip));
-    cmdline.AppendFormat(_T(" -" ARG_XBP " %p"),
+    cmdline.AppendFormat(_T(" -" ARG_XBP " 0x%p"),
                          (void*)(exceptionPointer->ContextRecord->Rbp));
-    cmdline.AppendFormat(_T(" -" ARG_XSP " %p"),
+    cmdline.AppendFormat(_T(" -" ARG_XSP " 0x%p"),
                          (void*)(exceptionPointer->ContextRecord->Rsp));
 #endif
 
@@ -560,4 +570,5 @@ InitializeCrashReporter(LPCTSTR productName)
 }
 }
 
+#endif
 #endif

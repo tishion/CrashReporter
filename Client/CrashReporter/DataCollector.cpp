@@ -1,12 +1,11 @@
 #include <windows.h>
-
 #include <Psapi.h>
 #include <TlHelp32.h>
-#include <atlfile.h>
-#include <atlstr.h>
-#include <atltime.h>
 #include <shlobj.h>
 #include <strsafe.h>
+
+#include <atlfile.h>
+#include <atltime.h>
 
 #include <algorithm>
 #include <cstdio>

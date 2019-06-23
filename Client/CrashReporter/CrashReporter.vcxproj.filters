@@ -63,6 +63,9 @@
     <ClInclude Include="Constants.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="StringCov.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataReporter.cpp">
@@ -87,6 +90,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DataCollector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StringCov.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

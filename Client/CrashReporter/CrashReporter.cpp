@@ -86,6 +86,7 @@ CollectBasicInformation(LPTSTR lpstrCmdLine,
     LogError("Failed to get xbp");
     return false;
   }
+  logData.xbp = xbp;
 
   // Get xsp
   uint64_t xsp = 0;
